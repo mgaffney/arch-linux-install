@@ -286,7 +286,7 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 	```
 
 	Edit the line `GRUB_CMDLINE_LINUX` to
-	`GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:cryptlvm:allow-discards"`
+	`GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:cryptlvm:allow-discards video=1600x900"`
 	then run:
 
 	```console
