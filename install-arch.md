@@ -198,7 +198,7 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 1. Enter the new system
 
 	```console
-	root@archiso ~ # arch-chroot /mnt /bin/zsh
+	root@archiso ~ # arch-chroot /mnt /bin/bash
 	```
 
 1. Workaround for grub-mkconfig hanging (part 2)
