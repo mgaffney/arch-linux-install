@@ -213,7 +213,7 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 
 	```console
 	[root@archiso /]# ln -sf /usr/share/zoneinfo/America/New_York /etc/localtime
-	[root@archiso /]# hwclock --systohc
+	[root@archiso /]# hwclock --systohc --utc
 	```
 
 1. Configure Localization
