@@ -313,3 +313,34 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 	```console
 	root@archiso ~ # shutdown now
 	```
+
+## Post Install
+
+All of the following steps assume you are logged in as root.
+
+1. Start network and check internet
+
+	```console
+	[root@hostname ~]# pacman -S dhcpcd
+	[root@hostname ~]# systemctl enable dhcpcd.service
+	[root@hostname ~]# systemctl start dhcpcd.service
+	```
+
+1. Update the system
+
+	```console
+	[root@hostname ~]# pacman -Syu
+	```
+
+1. Enable system clock synchronization
+
+	```console
+	[root@hostname ~]# systemctl enable systemd-timesyncd.service
+	[root@hostname ~]# systemctl start systemd-timesyncd.service
+	[root@hostname ~]# timedatectl status # to verify
+	```
+
+## Missing
+
+- Wifi
+- VPN
