@@ -1,7 +1,10 @@
 # Arch Linux Install
 
 Install Arch Linux with encrypted file-system and UEFI.
-Instructions are for a Dell Precision 5530 (laptop).
+Instructions are for a Dell Precision 5530 (laptop)
+using a wired/ethernet connection during
+the installation and initial configuration of the system.
+WiFi access is not enabled until the __Post Install__ phase.
 
 This is based on:
 
@@ -94,7 +97,7 @@ We are going to create 3 partitions using `cgdisk`.
 root@archiso ~ # cgdisk /dev/nvme0n1
 ```
 
-Create the partions using these values:
+Create the partitions using these values:
 
 1. 550 MiB EFI partition - /dev/nvme0n1p1
 	- start: +1M
@@ -318,21 +321,88 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 
 All of the following steps assume you are logged in as root.
 
-1. Start network and check internet
+### Configure Network
+
+The following steps will configure the laptop to:
+
+- start/stop using an ethernet connection when a cable is plugged
+  in/unplugged.
+- start/stop using a wifi access point when the laptop enters/leaves the
+  range of the access point
+
+__Verify the laptop is still connected to the ethernet cable.__
+
+1. Connect to the network to download and install additional packages
 
 	```console
 	[root@hostname ~]# pacman -S dhcpcd
 	[root@hostname ~]# systemctl enable dhcpcd.service
 	[root@hostname ~]# systemctl start dhcpcd.service
+	[root@hostname ~]# pacman -S ifplugd wpa_actiond
+	[root@hostname ~]# systemctl stop dhcpcd.service
+	[root@hostname ~]# systemctl disable dhcpcd.service
 	```
 
-1. Update the system
+1. Configure ethernet connection
+
+	See [here][netctl] and [here][netcfg] for more details.
+
+	```console
+	[root@hostname ~]# cd /etc/netctl
+	[root@hostname netctl]# cp examples/ethernet-dhcp .
+	[root@hostname netctl]# vim ethernet-dhcp
+	```
+
+	Edit the following lines:
+
+	```
+	Interface=enp58s0u1
+	Priority=2
+	```
+
+	```console
+	[root@hostname netctl]# systemctl enable netctl-ifplugd@enp58s0u1.service
+	[root@hostname netctl]# systemctl start netctl-ifplugd@enp58s0u1.service
+	```
+
+[netctl]: https://wiki.archlinux.org/index.php/netctl
+[netcfg]: https://wiki.archlinux.org/index.php/Network_configuration
+
+1. Configure Wifi connection(s)
+
+	See [here][netctl-wifi], [here][wifi] and [here][wifisup] for more
+	details.
+
+	```console
+	[root@hostname ~]# cd /etc/netctl
+	[root@hostname netctl]# cp examples/wireless-wpa home-wifi
+	[root@hostname netctl]# vim home-wifi
+	```
+
+	Edit the following lines:
+
+	```
+	Interface=wlp59s0
+	ESSID='my-home-essid'
+	Key='super-secret-password'
+	```
+
+	```console
+	[root@hostname netctl]# systemctl enable netctl-auto@wlp59s0.service
+	[root@hostname netctl]# systemctl start netctl-auto@wlp59s0.service
+	```
+
+[netctl-wifi]: https://wiki.archlinux.org/index.php/netctl#Wireless
+[wifi]: https://wiki.archlinux.org/index.php/Wireless_network_configuration
+[wifisup]: https://wiki.archlinux.org/index.php/WPA_supplicant
+
+### Update the system
 
 	```console
 	[root@hostname ~]# pacman -Syu
 	```
 
-1. Enable system clock synchronization
+### Enable system clock synchronization
 
 	```console
 	[root@hostname ~]# systemctl enable systemd-timesyncd.service
@@ -342,5 +412,4 @@ All of the following steps assume you are logged in as root.
 
 ## Missing
 
-- Wifi
 - VPN
