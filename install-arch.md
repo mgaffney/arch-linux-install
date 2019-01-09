@@ -398,17 +398,17 @@ __Verify the laptop is still connected to the ethernet cable.__
 
 ### Update the system
 
-	```console
-	[root@hostname ~]# pacman -Syu
-	```
+```console
+[root@hostname ~]# pacman -Syu
+```
 
 ### Enable system clock synchronization
 
-	```console
-	[root@hostname ~]# systemctl enable systemd-timesyncd.service
-	[root@hostname ~]# systemctl start systemd-timesyncd.service
-	[root@hostname ~]# timedatectl status # to verify
-	```
+```console
+[root@hostname ~]# systemctl enable systemd-timesyncd.service
+[root@hostname ~]# systemctl start systemd-timesyncd.service
+[root@hostname ~]# timedatectl status # to verify
+```
 
 ## Missing
 
