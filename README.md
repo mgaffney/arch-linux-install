@@ -279,9 +279,9 @@ root@archiso ~ # mount --bind /run /mnt/hostrun
 	Edit the following lines to:
 
 	```
-	GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:cryptlvm:allow-discards"
+	GRUB_CMDLINE_LINUX="cryptdevice=/dev/nvme0n1p3:cryptlvm:allow-discards video=1600x900"
 	...
-	GRUB_GFXMODE="1600x900x32"
+	GRUB_GFXMODE=1600x900x32,1600x900,auto
 	```
 
 	then run:
