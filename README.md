@@ -398,6 +398,109 @@ __Verify the laptop is still connected to the ethernet cable.__
 [root@hostname ~]# timedatectl status # to verify
 ```
 
-## Missing
+## Configure Linux Desktop
 
-- VPN
+### Fix Linux Console
+
+```console
+[root@hostname ~]# pacman -S terminus-font
+[root@hostname ~]# vim /etc/vconsole.conf
+```
+
+Add the following lines:
+
+	FONT=ter-132n
+	FONT_MAP=8859-1
+
+```console
+[root@hostname ~]# vim /etc/mkinitcpio.conf
+```
+
+- Add 'consolefont' to `HOOKS` after `keymap`.
+- Move `autodetect` after `consolefont`.
+- Add `nouveau` to `MODULES`
+
+```console
+[root@hostname ~]# mkinitcpio -p linux
+[root@hostname ~]# vim /etc/default/grub
+```
+
+- Remove `video=1600x900` from the end of `GRUB_CMDLINE_LINUX`.
+- Change `GRUB_GFXMODE` to `auto`.
+
+```console
+[root@hostname ~]# grub-mkconfig -o /boot/grub/grub.cfg
+```
+
+Reboot
+
+```console
+[root@hostname ~]# reboot now
+```
+
+## Install xorg
+
+```console
+[root@hostname ~]# pacman -S xorg-server xorg-init xorg-xrdb
+[root@hostname ~]# pacman -S mesa
+[root@hostname ~]# pacman -S xf86-video-intel xf86-video-nouveau
+[root@hostname ~]# pacman -S xterm
+[root@hostname ~]# pacman -S spectrwm
+[root@hostname ~]# pacman -S xorg-xrandr
+```
+
+- Login as mgaffney
+
+```console
+hostname% cp /etc/X11/xinit/xinitrc ~/.xinitrc
+hostname% vim ~/.xinitrc
+```
+
+Edit `.spectrwm.conf`.
+
+Add
+```
+bar_font = xos4 Terminus:pixelsize=32:antialias=true
+```
+
+Edit `.Xresources`:
+
+```
+Xft.dpi: 288
+xterm*font2: -*-terminus-*-*-*-*-32-*-*-*-*-*-*-*
+```
+
+```console
+hostname% startx
+# press Meta(alt)+Shift+Return: open terminal
+hostname% xrandr --output eDP-1 --mode 1600x900
+```
+
+## Spectrwm keys
+
+- meta=alt
+- mod4=windows key
+- Meta+Shift+Return: open terminal
+- Meta+Shift+q: exit spectrwm
+
+## Display
+
+Display size: 13.6" × 7.65" = 103.99in²
+(34.54cm × 19.43cm = 670.89cm²)
+at 282.42 PPI, 0.0899mm dot pitch, 79763 PPI²
+
+Reported by xdpyinfo:
+
+- 3840x2160 pixels
+- 1016x571 millimeters
+
+## Useful commands
+
+- xdpyinfo | more
+- xrdb -query | more
+- xrandr
+
+## Firefox
+
+Firefox uses the `Xft.dpi` setting in `.Xresources`.
+A setting between `188` and `288` seems to work well.
