@@ -91,29 +91,17 @@ To check the service status, use `timedatectl status`.
 
 ### Partition the disk
 
-We are going to create 3 partitions using `cgdisk`.
+We are going to create 3 partitions using [sgdisk][].
+
+[sgdisk]: https://www.rodsbooks.com/gdisk/sgdisk.html
 
 ```console
-root@archiso ~ # cgdisk /dev/nvme0n1
+root@archiso ~ # sgdisk \
+	-n 1:0:+512M -t 1:ef00 -c 1:"EFI" \
+	-n 2:0:+512M -t 2:8300 -c 2:"Boot" \
+	-n 3:0:0     -t 3:8e00 -c 3:"Encrypted" \
+	-p /dev/nvme0n1
 ```
-
-Create the partitions using these values:
-
-1. 550 MiB EFI partition - /dev/nvme0n1p1
-	- start: +1M
-	- size: +550M
-	- hex: ef00
-	- label: EFI
-2. 550 MiB Boot partition - /dev/nvme0n1p2
-	- start: +1M
-	- size: +550M
-	- hex: 8300
-	- label: Boot
-3. 100% size Encrypted partition - /dev/nvme0n1p3
-	- start: +1M
-	- size: (select default)
-	- hex: 8e00 (LVM)
-	- label: Encrypted
 
 ### Format the non-encrypted partitions
 
